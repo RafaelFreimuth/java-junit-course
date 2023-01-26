@@ -2,6 +2,7 @@ package br.ce.wcaquino.servicos;
 
 import static br.ce.wcaquino.utils.DataUtils.adicionarDias;
 import static br.ce.wcaquino.utils.DataUtils.isMesmaData;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -22,7 +23,7 @@ public class LocacaoServiceTest {
 		
 		Locacao locacao = new LocacaoService().alugarFilme(usuario, filme);
 		
-		assertTrue(locacao.getValor() == 89.98);
+		assertEquals(Double.valueOf(89.98), locacao.getValor());
 		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
 		assertTrue(isMesmaData(locacao.getDataRetorno(), adicionarDias(new Date(), 1)));
 	}
