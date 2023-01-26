@@ -28,8 +28,6 @@ public class LocacaoServiceTest {
 		
 		assertEquals(Double.valueOf(89.98), locacao.getValor());
 		assertThat(locacao.getValor(), is(equalTo(Double.valueOf(89.98))));
-		
-		assertTrue(isMesmaData(locacao.getDataRetorno(), adicionarDias(new Date(), 1)));
 	}
 	
 	@Test
@@ -40,6 +38,17 @@ public class LocacaoServiceTest {
 		Locacao locacao = new LocacaoService().alugarFilme(usuario, filme);
 		
 		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
+	}
+	
+	@Test
+	public void deveVerificarQueAhDataDeRetornoEhParaAmanha() {
+		Usuario usuario = new Usuario("Rodrigo");
+		Filme filme = new Filme("Capitão América", 5, 25.97);
+		
+		Locacao locacao = new LocacaoService().alugarFilme(usuario, filme);
+		
+		Date amanha = adicionarDias(new Date(), 1);
+		assertTrue(isMesmaData(locacao.getDataRetorno(), amanha));
 	}
 
 }
