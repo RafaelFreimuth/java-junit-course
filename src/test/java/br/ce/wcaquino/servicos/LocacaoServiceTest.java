@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import br.ce.wcaquino.entidades.Filme;
