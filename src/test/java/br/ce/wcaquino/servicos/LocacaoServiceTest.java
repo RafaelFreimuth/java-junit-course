@@ -9,7 +9,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
@@ -17,6 +19,9 @@ import br.ce.wcaquino.entidades.Usuario;
 
 public class LocacaoServiceTest {
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+	
 	@Test
 	public void deveVerificarAOhValorDaAlocacaoQueDeveSerOhMesmoDoFilme() {
 		Usuario usuario = new Usuario("Rafael Betta");
@@ -47,6 +52,17 @@ public class LocacaoServiceTest {
 		
 		Date amanha = adicionarDias(new Date(), 1);
 		assertTrue(isMesmaData(locacao.getDataRetorno(), amanha));
+	}
+	
+	@Test
+	public void deveLancarExcecaoCasoTenteAlugarUmFilmeSemEstoque() {
+		Usuario usuario = new Usuario("Rafael");
+		Filme filme = new Filme("Avatar", 0, 52.69);
+		
+		expectedException.expect(RuntimeException.class);
+		expectedException.expectMessage("Filme sem estoque");
+		
+		new LocacaoService().alugarFilme(usuario, filme);
 	}
 
 }
