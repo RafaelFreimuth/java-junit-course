@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +20,13 @@ import br.ce.wcaquino.entidades.Usuario;
 
 public class LocacaoServiceTest {
 
+	LocacaoService service;
+	
+	@Before
+	public void setUp() {
+		service = new LocacaoService();
+	}
+	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 	
@@ -28,7 +36,7 @@ public class LocacaoServiceTest {
 		
 		Filme filme = new Filme("Avatar 2", 100, 89.98);
 		
-		Locacao locacao = new LocacaoService().alugarFilme(usuario, filme);
+		Locacao locacao = this.service.alugarFilme(usuario, filme);
 		
 		assertThat(locacao.getValor(), is(equalTo(Double.valueOf(89.98))));
 	}
@@ -38,7 +46,7 @@ public class LocacaoServiceTest {
 		Usuario usuario = new Usuario("Rafael");
 		Filme filme = new Filme("Vingadores", 20, 50.0);
 		
-		Locacao locacao = new LocacaoService().alugarFilme(usuario, filme);
+		Locacao locacao = this.service.alugarFilme(usuario, filme);
 		
 		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
 	}
@@ -48,7 +56,7 @@ public class LocacaoServiceTest {
 		Usuario usuario = new Usuario("Rodrigo");
 		Filme filme = new Filme("Capitão América", 5, 25.97);
 		
-		Locacao locacao = new LocacaoService().alugarFilme(usuario, filme);
+		Locacao locacao = this.service.alugarFilme(usuario, filme);
 		
 		Date amanha = adicionarDias(new Date(), 1);
 		assertTrue(isMesmaData(locacao.getDataRetorno(), amanha));
@@ -62,7 +70,7 @@ public class LocacaoServiceTest {
 		expectedException.expect(RuntimeException.class);
 		expectedException.expectMessage("Filme sem estoque");
 		
-		new LocacaoService().alugarFilme(usuario, filme);
+		this.service.alugarFilme(usuario, filme);
 	}
 
 }
