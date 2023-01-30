@@ -11,6 +11,10 @@ import br.ce.wcaquino.entidades.Usuario;
 public class LocacaoService {
 	
 	public Locacao alugarFilme(Usuario usuario, Filme filme) {
+		if (filme.getEstoque().equals(0)) {
+			throw new RuntimeException("Filme sem estoque");
+		}
+		
 		Locacao locacao = new Locacao();
 		locacao.setFilme(filme);
 		locacao.setUsuario(usuario);
