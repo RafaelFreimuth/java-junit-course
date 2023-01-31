@@ -17,6 +17,7 @@ import org.junit.rules.ExpectedException;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
+import br.ce.wcaquino.utils.ListUtil;
 
 public class LocacaoServiceTest {
 
@@ -36,7 +37,7 @@ public class LocacaoServiceTest {
 		
 		Filme filme = new Filme("Avatar 2", 100, 89.98);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, filme);
+		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(filme));
 		
 		assertThat(locacao.getValor(), is(equalTo(Double.valueOf(89.98))));
 	}
@@ -46,7 +47,7 @@ public class LocacaoServiceTest {
 		Usuario usuario = new Usuario("Rafael");
 		Filme filme = new Filme("Vingadores", 20, 50.0);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, filme);
+		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(filme));
 		
 		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
 	}
@@ -56,7 +57,7 @@ public class LocacaoServiceTest {
 		Usuario usuario = new Usuario("Rodrigo");
 		Filme filme = new Filme("Capitão América", 5, 25.97);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, filme);
+		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(filme));
 		
 		Date amanha = adicionarDias(new Date(), 1);
 		assertTrue(isMesmaData(locacao.getDataRetorno(), amanha));
@@ -70,7 +71,7 @@ public class LocacaoServiceTest {
 		expectedException.expect(RuntimeException.class);
 		expectedException.expectMessage("Filme sem estoque");
 		
-		this.service.alugarFilme(usuario, filme);
+		this.service.alugarFilme(usuario, ListUtil.toList(filme));
 	}
 
 }
