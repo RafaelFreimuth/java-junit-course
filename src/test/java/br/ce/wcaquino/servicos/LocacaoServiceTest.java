@@ -74,4 +74,16 @@ public class LocacaoServiceTest {
 		this.service.alugarFilme(usuario, ListUtil.toList(filme));
 	}
 
+	@Test
+	public void deveSerPossivelAlugarMaisDeUmFilme() {
+		Usuario usuario = new Usuario("Rafael");
+		
+		Filme filmeAvatar = new Filme("Avatar", 5, 10.0);
+		Filme filmeVingadores = new Filme("Vingadores", 10, 20.0);
+		
+		Locacao locacao = this.service.alugarFilme(usuario, 
+												   ListUtil.toList(filmeAvatar, filmeVingadores));
+		
+		assertThat(locacao.getValor(), is(30.0));
+	}
 }
