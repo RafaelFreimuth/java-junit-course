@@ -86,4 +86,17 @@ public class LocacaoServiceTest {
 		
 		assertThat(locacao.getValor(), is(30.0));
 	}
+	
+	@Test
+	public void deveDarDescontoDeCinquentaPorCentoParaLocacaoAPartirDeTRESUnidades() {
+		Usuario usuario = new Usuario("Rafael");
+		
+		Filme avatar = new Filme("Avatar 2", 10, 4.0);
+		Filme vingadores = new Filme("Vingadores", 10, 4.0);
+		Filme huck = new Filme("Huck", 10, 4.0);
+		
+		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(avatar, vingadores, huck));
+		
+		assertThat(locacao.getValor(), is(6.0));
+	}
 }
