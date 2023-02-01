@@ -43,8 +43,16 @@ public class LocacaoService {
 	private Double obterValorTotalLocacao(List<Filme> filmes) {
 		Double totalizador = 0.0;
 		
+		Boolean aplicarDescontoDe50Porcento = filmes.size() >= 3;
+		
 		for (Filme filme : filmes) {
-			totalizador = totalizador + filme.getPrecoLocacao();
+			Double precoLocacao = filme.getPrecoLocacao();
+			
+			if (aplicarDescontoDe50Porcento) {
+				precoLocacao = precoLocacao * 0.5;
+			}
+			
+			totalizador = totalizador + precoLocacao;
 		}
 		
 		return totalizador;
