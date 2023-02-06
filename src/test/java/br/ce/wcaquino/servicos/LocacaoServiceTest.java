@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import br.ce.wcaquino.builders.UsuarioBuilder;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
@@ -22,10 +23,12 @@ import br.ce.wcaquino.utils.ListUtil;
 public class LocacaoServiceTest {
 
 	LocacaoService service;
+	Usuario usuarioDefault;
 	
 	@Before
 	public void setUp() {
 		service = new LocacaoService();
+		usuarioDefault = new UsuarioBuilder().usuarioDefault();
 	}
 	
 	@Rule
@@ -33,31 +36,27 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveVerificarAOhValorDaAlocacaoQueDeveSerOhMesmoDoFilme() {
-		Usuario usuario = new Usuario("Rafael Betta");
-		
 		Filme filme = new Filme("Avatar 2", 100, 89.98);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(filme));
+		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 		
 		assertThat(locacao.getValor(), is(equalTo(Double.valueOf(89.98))));
 	}
 	
 	@Test
 	public void deveVerificarQueAhDataDeLocacaoEhAhDataAtual() {
-		Usuario usuario = new Usuario("Rafael");
 		Filme filme = new Filme("Vingadores", 20, 50.0);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(filme));
+		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 		
 		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
 	}
 	
 	@Test
 	public void deveVerificarQueAhDataDeRetornoEhParaAmanha() {
-		Usuario usuario = new Usuario("Rodrigo");
 		Filme filme = new Filme("Capitão América", 5, 25.97);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(filme));
+		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 		
 		Date amanha = adicionarDias(new Date(), 1);
 		assertTrue(isMesmaData(locacao.getDataRetorno(), amanha));
@@ -65,23 +64,20 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveLancarExcecaoCasoTenteAlugarUmFilmeSemEstoque() {
-		Usuario usuario = new Usuario("Rafael");
 		Filme filme = new Filme("Avatar", 0, 52.69);
 		
 		expectedException.expect(RuntimeException.class);
 		expectedException.expectMessage("Filme sem estoque");
 		
-		this.service.alugarFilme(usuario, ListUtil.toList(filme));
+		this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 	}
 
 	@Test
 	public void deveSerPossivelAlugarMaisDeUmFilme() {
-		Usuario usuario = new Usuario("Rafael");
-		
 		Filme filmeAvatar = new Filme("Avatar", 5, 10.0);
 		Filme filmeVingadores = new Filme("Vingadores", 10, 20.0);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, 
+		Locacao locacao = this.service.alugarFilme(usuarioDefault, 
 												   ListUtil.toList(filmeAvatar, filmeVingadores));
 		
 		assertThat(locacao.getValor(), is(30.0));
@@ -89,13 +85,11 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveDarDescontoDeCinquentaPorCentoParaLocacaoAPartirDeTRESUnidades() {
-		Usuario usuario = new Usuario("Rafael");
-		
 		Filme avatar = new Filme("Avatar 2", 10, 4.0);
 		Filme vingadores = new Filme("Vingadores", 10, 4.0);
 		Filme huck = new Filme("Huck", 10, 4.0);
 		
-		Locacao locacao = this.service.alugarFilme(usuario, ListUtil.toList(avatar, vingadores, huck));
+		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(avatar, vingadores, huck));
 		
 		assertThat(locacao.getValor(), is(6.0));
 	}
