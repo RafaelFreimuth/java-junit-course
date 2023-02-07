@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.builders.UsuarioBuilder;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
@@ -36,7 +37,7 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveVerificarAOhValorDaAlocacaoQueDeveSerOhMesmoDoFilme() {
-		Filme filme = new Filme("Avatar 2", 100, 89.98);
+		Filme filme = new FilmeBuilder().filmeByPrecoLocacao(89.98);
 		
 		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 		
@@ -45,7 +46,7 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveVerificarQueAhDataDeLocacaoEhAhDataAtual() {
-		Filme filme = new Filme("Vingadores", 20, 50.0);
+		Filme filme = new FilmeBuilder().filmeDefault();
 		
 		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 		
@@ -54,7 +55,7 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveVerificarQueAhDataDeRetornoEhParaAmanha() {
-		Filme filme = new Filme("Capitão América", 5, 25.97);
+		Filme filme = new FilmeBuilder().filmeDefault();
 		
 		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 		
@@ -64,7 +65,7 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveLancarExcecaoCasoTenteAlugarUmFilmeSemEstoque() {
-		Filme filme = new Filme("Avatar", 0, 52.69);
+		Filme filme = new FilmeBuilder().filmeSemEstoque();
 		
 		expectedException.expect(RuntimeException.class);
 		expectedException.expectMessage("Filme sem estoque");
@@ -74,8 +75,8 @@ public class LocacaoServiceTest {
 
 	@Test
 	public void deveSerPossivelAlugarMaisDeUmFilme() {
-		Filme filmeAvatar = new Filme("Avatar", 5, 10.0);
-		Filme filmeVingadores = new Filme("Vingadores", 10, 20.0);
+		Filme filmeAvatar = new FilmeBuilder().filmeDefault();
+		Filme filmeVingadores = new FilmeBuilder().filmeDefault();
 		
 		Locacao locacao = this.service.alugarFilme(usuarioDefault, 
 												   ListUtil.toList(filmeAvatar, filmeVingadores));
@@ -85,9 +86,9 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveDarDescontoDeCinquentaPorCentoParaLocacaoAPartirDeTRESUnidades() {
-		Filme avatar = new Filme("Avatar 2", 10, 4.0);
-		Filme vingadores = new Filme("Vingadores", 10, 4.0);
-		Filme huck = new Filme("Huck", 10, 4.0);
+		Filme avatar = new FilmeBuilder().filmeByPrecoLocacao(4.0);
+		Filme vingadores = new FilmeBuilder().filmeByPrecoLocacao(4.0);
+		Filme huck = new FilmeBuilder().filmeByPrecoLocacao(4.0);
 		
 		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(avatar, vingadores, huck));
 		
