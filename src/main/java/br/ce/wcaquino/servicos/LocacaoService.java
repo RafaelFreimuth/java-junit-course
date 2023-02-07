@@ -5,11 +5,14 @@ import static br.ce.wcaquino.utils.DataUtils.adicionarDias;
 import java.util.Date;
 import java.util.List;
 
+import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 
 public class LocacaoService {
+	
+	LocacaoDAO locacaoDAO;
 	
 	public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) {
 		
@@ -28,6 +31,8 @@ public class LocacaoService {
 		Date dataEntrega = new Date();
 		dataEntrega = adicionarDias(dataEntrega, 1);
 		locacao.setDataRetorno(dataEntrega);
+		
+		locacaoDAO.salvar(locacao);
 		
 		return locacao;
 	}
