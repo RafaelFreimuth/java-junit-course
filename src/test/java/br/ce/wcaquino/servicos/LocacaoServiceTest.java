@@ -13,9 +13,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.builders.UsuarioBuilder;
+import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
@@ -29,6 +31,9 @@ public class LocacaoServiceTest {
 	@Before
 	public void setUp() {
 		service = new LocacaoService();
+		LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
+		service.setLocacaoDAO(locacaoDAO);
+		
 		usuarioDefault = new UsuarioBuilder().usuarioDefault();
 	}
 	

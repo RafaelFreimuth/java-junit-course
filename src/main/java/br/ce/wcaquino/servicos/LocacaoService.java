@@ -62,4 +62,8 @@ public class LocacaoService {
 		
 		return totalizador;
 	}
+	
+	public void setLocacaoDAO(LocacaoDAO locacaoDAO) {
+		this.locacaoDAO = locacaoDAO;
+	}
 }
