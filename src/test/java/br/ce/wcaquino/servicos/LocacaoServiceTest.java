@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
@@ -16,6 +17,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
+import br.ce.wcaquino.builders.LocacaoBuilder;
 import br.ce.wcaquino.builders.UsuarioBuilder;
 import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
@@ -29,14 +31,17 @@ public class LocacaoServiceTest {
 	Usuario usuarioDefault;
 
 	SPCService spcService = Mockito.mock(SPCService.class);
+	EnviarEmailService enviarEmailService = Mockito.mock(EnviarEmailService.class);
+	LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
 	
 	@Before
 	public void setUp() {
 		service = new LocacaoService();
-		LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
 		
 		service.setLocacaoDAO(locacaoDAO);
 		service.setSPCService(spcService);
+		service.setLocacaoDAO(locacaoDAO);
+		service.setEnviarEmailService(enviarEmailService);
 		
 		usuarioDefault = new UsuarioBuilder().usuarioDefault();
 	}
@@ -108,11 +113,22 @@ public class LocacaoServiceTest {
 	public void deveLancarExcecaoCasoUsuarioEstejaNegativadoSpc() {
 		Filme filme = new FilmeBuilder().filmeDefault();
 		
-		Mockito.when(spcService.isUsuarioComSaldoNegativado(usuarioDefault)).thenReturn(Boolean.TRUE);
+		when(spcService.isUsuarioComSaldoNegativado(usuarioDefault)).thenReturn(Boolean.TRUE);
 		
 		expectedException.expect(RuntimeException.class);
 		expectedException.expectMessage("O usuário está negativado no SPC");
 		
 		this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
+	}
+	
+	@Test
+	public void deveEnviarEmailParaUsuarioCasoPossuaLocacoesComDevolucoesAtrasadas() {
+		Locacao locacao = new LocacaoBuilder().locacaoComUsuario(usuarioDefault);
+		
+		when(locacaoDAO.obterLocacoesComDevolucacaoAtrasada()).thenReturn(ListUtil.toList(locacao));
+		
+		this.service.enviarEmailsUsuariosDevolucaoAtrasadas();
+		
+		Mockito.verify(enviarEmailService).enviar(usuarioDefault);
 	}
 }
