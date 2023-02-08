@@ -12,8 +12,9 @@ import br.ce.wcaquino.entidades.Usuario;
 
 public class LocacaoService {
 	
-	LocacaoDAO locacaoDAO;
-	SPCService spcService;
+	private LocacaoDAO locacaoDAO;
+	private SPCService spcService;
+	private EnviarEmailService enviarEmailService;
 	
 	public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) {
 		
@@ -37,6 +38,14 @@ public class LocacaoService {
 		locacaoDAO.salvar(locacao);
 		
 		return locacao;
+	}
+	
+	public void enviarEmailsUsuariosDevolucaoAtrasadas() {
+		List<Locacao> locacoesAtrasadas = locacaoDAO.obterLocacoesComDevolucacaoAtrasada();
+		
+		for (Locacao locacao : locacoesAtrasadas) {
+			enviarEmailService.enviar(locacao.getUsuario());
+		}
 	}
 
 	private void validarUsuarioNegativadoSPC(Usuario usuario) {
@@ -77,5 +86,9 @@ public class LocacaoService {
 	
 	public void setSPCService(SPCService spcService) {
 		this.spcService = spcService;
+	}
+	
+	public void setEnviarEmailService(EnviarEmailService enviarEmailService) {
+		this.enviarEmailService = enviarEmailService;
 	}
 }
