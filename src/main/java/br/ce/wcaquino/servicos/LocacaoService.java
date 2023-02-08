@@ -13,6 +13,7 @@ import br.ce.wcaquino.entidades.Usuario;
 public class LocacaoService {
 	
 	LocacaoDAO locacaoDAO;
+	SPCService spcService;
 	
 	public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) {
 		
@@ -21,6 +22,7 @@ public class LocacaoService {
 		}
 		
 		validarEstoqueDosFilmes(filmes);
+		validarUsuarioNegativadoSPC(usuario);
 		
 		Locacao locacao = new Locacao();
 		locacao.setFilmes(filmes);
@@ -35,6 +37,12 @@ public class LocacaoService {
 		locacaoDAO.salvar(locacao);
 		
 		return locacao;
+	}
+
+	private void validarUsuarioNegativadoSPC(Usuario usuario) {
+		if (spcService.isUsuarioComSaldoNegativado(usuario)) {
+			throw new RuntimeException("O usuário está negativado no SPC");
+		}
 	}
 
 	private void validarEstoqueDosFilmes(List<Filme> filmes) {
@@ -65,5 +73,9 @@ public class LocacaoService {
 	
 	public void setLocacaoDAO(LocacaoDAO locacaoDAO) {
 		this.locacaoDAO = locacaoDAO;
+	}
+	
+	public void setSPCService(SPCService spcService) {
+		this.spcService = spcService;
 	}
 }
