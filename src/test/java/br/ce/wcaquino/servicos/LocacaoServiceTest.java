@@ -27,12 +27,16 @@ public class LocacaoServiceTest {
 
 	LocacaoService service;
 	Usuario usuarioDefault;
+
+	SPCService spcService = Mockito.mock(SPCService.class);
 	
 	@Before
 	public void setUp() {
 		service = new LocacaoService();
 		LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
+		
 		service.setLocacaoDAO(locacaoDAO);
+		service.setSPCService(spcService);
 		
 		usuarioDefault = new UsuarioBuilder().usuarioDefault();
 	}
@@ -98,5 +102,17 @@ public class LocacaoServiceTest {
 		Locacao locacao = this.service.alugarFilme(usuarioDefault, ListUtil.toList(avatar, vingadores, huck));
 		
 		assertThat(locacao.getValor(), is(6.0));
+	}
+	
+	@Test
+	public void deveLancarExcecaoCasoUsuarioEstejaNegativadoSpc() {
+		Filme filme = new FilmeBuilder().filmeDefault();
+		
+		Mockito.when(spcService.isUsuarioComSaldoNegativado(usuarioDefault)).thenReturn(Boolean.TRUE);
+		
+		expectedException.expect(RuntimeException.class);
+		expectedException.expectMessage("O usuário está negativado no SPC");
+		
+		this.service.alugarFilme(usuarioDefault, ListUtil.toList(filme));
 	}
 }
