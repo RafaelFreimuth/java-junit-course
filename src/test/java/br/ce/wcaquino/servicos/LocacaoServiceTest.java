@@ -2,10 +2,12 @@ package br.ce.wcaquino.servicos;
 
 import static br.ce.wcaquino.utils.DataUtils.adicionarDias;
 import static br.ce.wcaquino.utils.DataUtils.isMesmaData;
+import static br.ce.wcaquino.utils.DataUtils.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
@@ -14,6 +16,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -26,6 +29,7 @@ import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
+import br.ce.wcaquino.utils.DataUtils;
 import br.ce.wcaquino.utils.ListUtil;
 
 public class LocacaoServiceTest {
@@ -135,5 +139,20 @@ public class LocacaoServiceTest {
 		this.service.enviarEmailsUsuariosDevolucaoAtrasadas();
 		
 		Mockito.verify(enviarEmailService).enviar(usuarioDefault);
+	}
+	
+	@Test
+	public void devePorrogarAhLocacaoPara3DiasAhMais() {
+		Locacao locacao = new LocacaoBuilder().locacaoComUsuario(usuarioDefault);
+		
+		this.service.porrogar(locacao, 3);
+
+		ArgumentCaptor<Locacao> argCap = ArgumentCaptor.forClass(Locacao.class);
+		verify(locacaoDAO).salvar(argCap.capture());
+		
+		Locacao locacaoPorrogada = argCap.getValue();
+		
+		assertThat(locacaoPorrogada.getValor(), is(30.0));
+		assertTrue(DataUtils.isMesmaData(locacaoPorrogada.getDataRetorno(), obterDataComDiferencaDias(3)));
 	}
 }
