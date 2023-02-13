@@ -9,6 +9,7 @@ import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
+import br.ce.wcaquino.utils.DataUtils;
 
 public class LocacaoService {
 	
@@ -46,6 +47,17 @@ public class LocacaoService {
 		for (Locacao locacao : locacoesAtrasadas) {
 			enviarEmailService.enviar(locacao.getUsuario());
 		}
+	}
+	
+	public void porrogar(Locacao locacao, int qtdDias) {
+		Locacao novaLocacao = new Locacao();
+		novaLocacao.setDataLocacao(new Date());
+		novaLocacao.setDataRetorno(DataUtils.obterDataComDiferencaDias(qtdDias));
+		novaLocacao.setFilmes(locacao.getFilmes());
+		novaLocacao.setUsuario(locacao.getUsuario());
+		novaLocacao.setValor(locacao.getValor() * qtdDias);
+		
+		locacaoDAO.salvar(novaLocacao);
 	}
 
 	private void validarUsuarioNegativadoSPC(Usuario usuario) {
