@@ -14,7 +14,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.builders.LocacaoBuilder;
@@ -27,21 +30,23 @@ import br.ce.wcaquino.utils.ListUtil;
 
 public class LocacaoServiceTest {
 
+	@InjectMocks
 	LocacaoService service;
+	
 	Usuario usuarioDefault;
 
-	SPCService spcService = Mockito.mock(SPCService.class);
-	EnviarEmailService enviarEmailService = Mockito.mock(EnviarEmailService.class);
-	LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
+	@Mock
+	private SPCService spcService;
+	
+	@Mock
+	private EnviarEmailService enviarEmailService;
+	
+	@Mock
+	private LocacaoDAO locacaoDAO;
 	
 	@Before
 	public void setUp() {
-		service = new LocacaoService();
-		
-		service.setLocacaoDAO(locacaoDAO);
-		service.setSPCService(spcService);
-		service.setLocacaoDAO(locacaoDAO);
-		service.setEnviarEmailService(enviarEmailService);
+		MockitoAnnotations.openMocks(this);
 		
 		usuarioDefault = new UsuarioBuilder().usuarioDefault();
 	}
