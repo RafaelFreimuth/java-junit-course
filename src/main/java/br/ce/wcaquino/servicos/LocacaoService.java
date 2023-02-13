@@ -79,16 +79,4 @@ public class LocacaoService {
 		
 		return totalizador;
 	}
-	
-	public void setLocacaoDAO(LocacaoDAO locacaoDAO) {
-		this.locacaoDAO = locacaoDAO;
-	}
-	
-	public void setSPCService(SPCService spcService) {
-		this.spcService = spcService;
-	}
-	
-	public void setEnviarEmailService(EnviarEmailService enviarEmailService) {
-		this.enviarEmailService = enviarEmailService;
-	}
 }
